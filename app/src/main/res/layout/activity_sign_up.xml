@@ -76,6 +76,7 @@
         />
 
     <Button
+        android:id="@+id/submit"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -86,4 +87,16 @@
         android:text="SIGN UP"
         android:onClick="submitForm"
         />
+
+    <ProgressBar
+        android:id="@+id/loading_spinner"
+        style="?android:attr/progressBarStyleLargeInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/last_donated_at"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
+
+
 </RelativeLayout>

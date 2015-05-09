@@ -3,6 +3,8 @@ package tw.tapforblood;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
@@ -16,8 +18,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -64,7 +68,6 @@ public class SignUpActivity extends Activity
                     ((TextView) v.findViewById(android.R.id.text1)).setText("");
                     ((TextView) v.findViewById(android.R.id.text1)).setHint(getItem(getCount()));
                     ((TextView) v.findViewById(android.R.id.text1)).setTypeface(Typeface.create("monospace", Typeface.NORMAL));
-                    //"Hint to be displayed"
                 }
 
                 return v;
@@ -131,6 +134,10 @@ public class SignUpActivity extends Activity
     }
 
     public void submitForm(View view) {
+        View spinner = findViewById(R.id.loading_spinner);
+        spinner.setVisibility(View.VISIBLE);
+        Button submitButton = (Button) findViewById(R.id.submit);
+        submitButton.setEnabled(false);
         AsyncTask<View, Void, String> execute = new RequestHandler().execute(view);
 
     }
@@ -186,23 +193,24 @@ public class SignUpActivity extends Activity
             HttpPost post = new HttpPost(tw.tapforblood.helpers.Environment.createUser());
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("user[name]", name);
-                jsonObject.put("user[phone_number]", phoneNumber);
-                jsonObject.put("user[blood_group]", bloodGroup);
-                jsonObject.put("user[last_donated]", lastDonatedDate);
-                jsonObject.put("user[latitude]", location.getLatitude());
-                jsonObject.put("user[longitude]", location.getLongitude());
+
+                jsonObject.put("name", name);
+                jsonObject.put("phone_number", phoneNumber);
+                jsonObject.put("blood_group", bloodGroup);
+                jsonObject.put("last_donated", lastDonatedDate);
+                jsonObject.put("latitude", location.getLatitude());
+                jsonObject.put("longitude", location.getLongitude());
 
                 StringEntity se = new StringEntity(jsonObject.toString());
                 se.setContentType("application/json");
                 post.setEntity(se);
                 HttpResponse response = httpClient.execute(post);
                 Log.d("TAG", response.getStatusLine().getStatusCode() + "");
-                if (response.getStatusLine().getStatusCode() == 201) {
+                if (response.getStatusLine().getStatusCode() == 200) {
                     System.out.println("created");
-                    return "Created";
+                    return "OK";
                 } else {
-                    return "Not created";
+                    return "ERROR";
                 }
 
 
@@ -221,7 +229,30 @@ public class SignUpActivity extends Activity
 
         @Override
         protected void onPostExecute(String s) {
-            Toast.makeText(getBaseContext(), s, Toast.LENGTH_SHORT).show();
+            String name = ((EditText) findViewById(R.id.name)).getText().toString();
+            String phoneNumber = ((EditText) findViewById(R.id.phone_number_prefix)).getText().toString() + ((EditText) findViewById(R.id.phone_number)).getText().toString() ;
+            String bloodGroup = ((Spinner)findViewById(R.id.blood_group)).getSelectedItem().toString();
+
+            View spinner = findViewById(R.id.loading_spinner);
+            spinner.setVisibility(View.GONE);
+            Button submitButton = (Button) findViewById(R.id.submit);
+            submitButton.setEnabled(true);
+            if(s.equals("OK")) {
+                String tap_for_blood_prefs = "TAP_FOR_BLOOD_PREFS";
+                SharedPreferences.Editor preferenceEditor = getBaseContext().getSharedPreferences("TAP_FOR_BLOOD_PREFS", MODE_PRIVATE).edit();
+                preferenceEditor.putString("phoneNumber", phoneNumber);
+                preferenceEditor.putString("name", name);
+                preferenceEditor.commit();
+
+                Toast.makeText(getBaseContext(), "Sign up successful!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getBaseContext(), "Something went wrong. Please try again later!", Toast.LENGTH_LONG).show();
+            }
+
+
+
         }
     }
 }
