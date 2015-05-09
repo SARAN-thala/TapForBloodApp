@@ -19,5 +19,9 @@ public class Environment {
     {
         return HOST_URI+ "/users/" + id + "/requests";
     }
+    public static String acceptRequestByUser(String requestId, String userId)
+    {
+        return HOST_URI+ "/users/" + userId + "/requests/"+ requestId +"/create";
+    }
 
 }

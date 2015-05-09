@@ -51,14 +51,20 @@
         android:layout_below="@id/name"/>
 
 
-    <ImageView
+    <ImageButton
         android:id="@+id/accept_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/check_mark_green_circle"
+        android:background="@drawable/rsz_grey_check_box"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="20dp"
+        />
+    <TextView
+        android:id="@+id/hidden_request_id"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
         />
     <View
         android:id="@+id/separator"
