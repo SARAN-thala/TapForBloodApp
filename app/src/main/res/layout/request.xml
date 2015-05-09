@@ -17,15 +17,40 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:layout_height="40dp"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textSize="18dp"
+        android:textAllCaps="true"
         android:gravity="center_vertical"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:layout_toRightOf="@id/phone_icon"/>
+    <TextView
+        android:id="@+id/phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:textSize="15dp"
+        android:gravity="center_vertical"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:layout_toRightOf="@id/phone_icon"
+        android:layout_below="@id/name"/>
+    <TextView
+        android:id="@+id/area"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceListItemSmall"
+        android:textSize="15dp"
+        android:gravity="center_vertical"
+        android:paddingStart="25dp"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:layout_toRightOf="@id/phone_number"
+        android:layout_below="@id/name"/>
+
+
     <ImageView
         android:id="@+id/accept_icon"
         android:layout_width="30dp"

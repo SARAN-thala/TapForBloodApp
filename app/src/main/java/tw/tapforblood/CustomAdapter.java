@@ -12,15 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+import java.util.Map;
+
 import tw.tapforblood.fragments.AllRequestsFragment;
 
 public class CustomAdapter extends BaseAdapter {
-    String [] result;
+    List<Map<String, String>> result;
     Context context;
     private static LayoutInflater inflater=null;
-    public CustomAdapter(ListFragment listFragment, String[] prgmNameList) {
+    public CustomAdapter(ListFragment listFragment, List<Map<String, String>> maps) {
         // TODO Auto-generated constructor stub
-        result=prgmNameList;
+        result=maps;
         context=listFragment.getActivity();
         inflater = ( LayoutInflater )context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -28,7 +31,7 @@ public class CustomAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return result.length;
+        return result.size();
     }
 
     @Override
@@ -45,7 +48,9 @@ public class CustomAdapter extends BaseAdapter {
 
     public class Holder
     {
-        TextView tv;
+        TextView name;
+        TextView phoneNumber;
+        TextView area;
         ImageView img;
     }
     @Override
@@ -54,15 +59,21 @@ public class CustomAdapter extends BaseAdapter {
         Holder holder=new Holder();
         View rowView;
         rowView = inflater.inflate(R.layout.request, null);
-        holder.tv=(TextView) rowView.findViewById(R.id.text);
+        holder.name=(TextView) rowView.findViewById(R.id.name);
+        holder.phoneNumber=(TextView) rowView.findViewById(R.id.phone_number);
+        holder.area=(TextView) rowView.findViewById(R.id.area);
         holder.img=(ImageView) rowView.findViewById(R.id.phone_icon);
-        holder.tv.setText(result[position]);
+
+        holder.name.setText(result.get(position).get("name"));
+        holder.area.setText(result.get(position).get("area"));
+        holder.phoneNumber.setText(result.get(position).get("phoneNumber"));
+
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:+919840692259"));
+                callIntent.setData(Uri.parse("tel:" + result.get(position).get("phoneNumber")));
                 context.startActivity(callIntent);
 //                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_LONG).show();
             }

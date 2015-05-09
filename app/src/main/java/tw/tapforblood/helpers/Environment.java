@@ -10,10 +10,14 @@ public class Environment {
     {
         return HOST_URI+ "/users";
     }
-
-    public String getFindStudentByIdURL(Integer id)
+    public static String getAllRequestsForUser(String userId)
     {
-        return HOST_URI+ "/student/"+id;
+        return HOST_URI+ "/blood_requests?user_id=" + userId;
+    }
+
+    public static String myRequestsForUser(String id)
+    {
+        return HOST_URI+ "/users/" + id + "/requests";
     }
 
 }
