@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tw.tapforblood.SignUpActivity">
+    >
 
     <TextView
         android:id="@+id/login_title"
@@ -24,19 +24,45 @@
         android:hint="Name"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="40dp"
         android:layout_below="@id/login_title"
         />
     <EditText
-        android:id="@+id/phone_number"
-        android:layout_width="fill_parent"
+        android:id="@+id/phone_number_prefix"
+        android:layout_width="70dp"
         android:layout_height="40dp"
-        android:hint="Phone Number (ex. +91987654321)"
+        android:text="+91"
+        android:textAlignment="center"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_below="@id/name"
         />
+
+    <EditText
+        android:id="@+id/phone_number"
+        android:layout_width="290dp"
+        android:layout_height="40dp"
+        android:hint="10 digit mobile number"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@id/phone_number_prefix"
+        android:layout_below="@id/name"
+        android:typeface="serif"
+        android:inputType="phone"
+        android:maxLength="10"/>
+
+    <Spinner
+        android:id="@+id/blood_group"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_below="@id/phone_number"
+        android:prompt="@string/blood_group_sign_up"
+        />
+
+
     <EditText
         android:id="@+id/last_donated_at"
         android:layout_width="fill_parent"
@@ -45,16 +71,18 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_below="@id/phone_number"
+        android:layout_below="@id/blood_group"
         android:onClick="showDatePickerDialog"
         />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@id/last_donated_at"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:background="@color/theme_blue"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="100dp"
         android:text="SIGN UP"
         />
 </RelativeLayout>

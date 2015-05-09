@@ -9,5 +9,6 @@
     <string name="title_section2">My requests</string>
     <string name="title_section3">I NEED BLOOD</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="blood_group_sign_up">Whats your blood group?</string>
 
 </resources>
