@@ -2,8 +2,12 @@ package tw.tapforblood;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -12,8 +16,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import tw.tapforblood.fragments.DatePickerFragment;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 
 public class SplashScreenActivity extends Activity {
@@ -26,6 +33,23 @@ public class SplashScreenActivity extends Activity {
         String tap_for_blood_prefs = "TAP_FOR_BLOOD_PREFS";
         final SharedPreferences sharedPreferences = getSharedPreferences(tap_for_blood_prefs, 0);
         String phoneNumber = sharedPreferences.getString("phoneNumber", "");
+
+        ConnectivityManager conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo.State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+        NetworkInfo.State wifi = conMan.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
+
+        if (mobile != NetworkInfo.State.CONNECTED && wifi != NetworkInfo.State.CONNECTED ) {
+            Toast.makeText(this, "No internet connection available. Please check your settings.", LENGTH_LONG).show();
+            return;
+        }
+
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if(!statusOfGPS) {
+            Toast.makeText(this, "GPS is disabled. Please turn on GPS from Settings.", LENGTH_LONG).show();
+            return;
+        }
 
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             new Handler().postDelayed(new Runnable() {
