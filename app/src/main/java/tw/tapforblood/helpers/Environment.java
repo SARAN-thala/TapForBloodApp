@@ -15,13 +15,18 @@ public class Environment {
         return HOST_URI+ "/blood_requests?user_id=" + userId;
     }
 
-    public static String myRequestsForUser(String id)
-    {
-        return HOST_URI+ "/users/" + id + "/requests";
+    public static String myRequestsForUser(String id) {
+        return HOST_URI + "/users/" + id + "/requests";
+    }
+    public static String createBloodRequest(){
+        return HOST_URI + "/blood_requests";
     }
     public static String acceptRequestByUser(String requestId, String userId)
     {
         return HOST_URI+ "/users/" + userId + "/requests/"+ requestId +"/create";
     }
 
+    public static String getResponsesUrl(String userId) {
+        return HOST_URI +"/users/" + userId + "/responses";
+    }
 }
