@@ -2,7 +2,9 @@ package tw.tapforblood.fragments;
 
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +16,7 @@ import android.widget.Toast;
 
 import tw.tapforblood.CustomAdapter;
 
-public class AllRequestsFragment extends ListFragment {
+public class AllRequestsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<String> {
     String[] numbers_text = new String[] { "one", "two", "three", "four",
             "five", "six", "seven", "eight", "nine", "ten", "eleven",
             "twelve", "thirteen", "fourteen", "fifteen" };
@@ -38,4 +40,18 @@ public class AllRequestsFragment extends ListFragment {
 //        Toast.makeText(getActivity(), numbers_digits[(int) id], Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+
+    }
 }

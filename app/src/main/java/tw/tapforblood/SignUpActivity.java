@@ -33,6 +33,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -180,10 +181,10 @@ public class SignUpActivity extends Activity
 
     private class RequestHandler extends AsyncTask<View, Void, String> {
 
+        private String userId = "";
+
         @Override
         protected String doInBackground(View... views) {
-
-            View currentView = views[0];
 
             String name = ((EditText) findViewById(R.id.name)).getText().toString();
             String phoneNumber = ((EditText) findViewById(R.id.phone_number_prefix)).getText().toString() + ((EditText) findViewById(R.id.phone_number)).getText().toString() ;
@@ -207,6 +208,8 @@ public class SignUpActivity extends Activity
                 HttpResponse response = httpClient.execute(post);
                 Log.d("TAG", response.getStatusLine().getStatusCode() + "");
                 if (response.getStatusLine().getStatusCode() == 200) {
+                    String responseBody = EntityUtils.toString(response.getEntity());
+                    userId = new JSONObject(responseBody).getString("user_id");
                     System.out.println("created");
                     return "OK";
                 } else {
@@ -231,17 +234,17 @@ public class SignUpActivity extends Activity
         protected void onPostExecute(String s) {
             String name = ((EditText) findViewById(R.id.name)).getText().toString();
             String phoneNumber = ((EditText) findViewById(R.id.phone_number_prefix)).getText().toString() + ((EditText) findViewById(R.id.phone_number)).getText().toString() ;
-            String bloodGroup = ((Spinner)findViewById(R.id.blood_group)).getSelectedItem().toString();
 
             View spinner = findViewById(R.id.loading_spinner);
             spinner.setVisibility(View.GONE);
             Button submitButton = (Button) findViewById(R.id.submit);
             submitButton.setEnabled(true);
             if(s.equals("OK")) {
-                String tap_for_blood_prefs = "TAP_FOR_BLOOD_PREFS";
                 SharedPreferences.Editor preferenceEditor = getBaseContext().getSharedPreferences("TAP_FOR_BLOOD_PREFS", MODE_PRIVATE).edit();
                 preferenceEditor.putString("phoneNumber", phoneNumber);
                 preferenceEditor.putString("name", name);
+                preferenceEditor.putString("user_id", userId);
+
                 preferenceEditor.commit();
 
                 Toast.makeText(getBaseContext(), "Sign up successful!", Toast.LENGTH_SHORT).show();

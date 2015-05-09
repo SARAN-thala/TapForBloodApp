@@ -32,7 +32,7 @@ public class SplashScreenActivity extends Activity {
 
         String tap_for_blood_prefs = "TAP_FOR_BLOOD_PREFS";
         final SharedPreferences sharedPreferences = getSharedPreferences(tap_for_blood_prefs, 0);
-        String phoneNumber = sharedPreferences.getString("phoneNumber", "");
+        String user_id = sharedPreferences.getString("user_id", "");
 
         ConnectivityManager conMan = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo.State mobile = conMan.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
@@ -51,7 +51,7 @@ public class SplashScreenActivity extends Activity {
             return;
         }
 
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+        if (user_id != null && !user_id.isEmpty()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
