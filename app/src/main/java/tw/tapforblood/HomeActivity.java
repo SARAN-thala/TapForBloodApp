@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 import tw.tapforblood.R;
 import tw.tapforblood.fragments.AllRequestsFragment;

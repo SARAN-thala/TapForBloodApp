@@ -2,6 +2,8 @@ package tw.tapforblood.fragments;
 
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import tw.tapforblood.CustomAdapter;
-import tw.tapforblood.R;
 
 public class AllRequestsFragment extends ListFragment {
     String[] numbers_text = new String[] { "one", "two", "three", "four",
@@ -25,12 +26,16 @@ public class AllRequestsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         setListAdapter(new CustomAdapter(this, numbers_text));
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Toast.makeText(getActivity(), numbers_digits[(int) id], Toast.LENGTH_SHORT).show();
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:+919840692259"));
+        startActivity(callIntent);
+
+//        Toast.makeText(getActivity(), numbers_digits[(int) id], Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -2,6 +2,8 @@ package tw.tapforblood;
 
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,7 @@ import android.widget.Toast;
 
 import tw.tapforblood.fragments.AllRequestsFragment;
 
-public class CustomAdapter extends BaseAdapter{
+public class CustomAdapter extends BaseAdapter {
     String [] result;
     Context context;
     private static LayoutInflater inflater=null;
@@ -59,7 +61,10 @@ public class CustomAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_LONG).show();
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:+919840692259"));
+                context.startActivity(callIntent);
+//                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_LONG).show();
             }
         });
         return rowView;

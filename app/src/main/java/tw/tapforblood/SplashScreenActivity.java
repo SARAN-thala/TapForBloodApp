@@ -51,7 +51,7 @@ public class SplashScreenActivity extends Activity {
             return;
         }
 
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+//        if (phoneNumber != null && !phoneNumber.isEmpty()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -60,16 +60,16 @@ public class SplashScreenActivity extends Activity {
                     finish();
                 }
             }, 3000);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }, 3000);
-        }
+//        } else {
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            }, 3000);
+//        }
     }
 
 
