@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.TextView;
 import tw.tapforblood.R;
 import tw.tapforblood.fragments.AllRequestsFragment;
+import tw.tapforblood.fragments.INeedBloodFragment;
 import tw.tapforblood.fragments.MyRequestsFragment;
 
 public class HomeActivity extends Activity implements ActionBar.TabListener {
@@ -134,7 +135,7 @@ public class HomeActivity extends Activity implements ActionBar.TabListener {
                 case 1:
                     return new MyRequestsFragment();
                 case 2:
-                    return PlaceholderFragment.newInstance(position + 1);
+                    return new INeedBloodFragment();
             }
         return null;
         }
