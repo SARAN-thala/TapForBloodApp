@@ -153,7 +153,7 @@ public class MapsActivity extends FragmentActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        mMap.addMarker(new MarkerOptions().position(NewYork).title(value));
+
     }
 }
 

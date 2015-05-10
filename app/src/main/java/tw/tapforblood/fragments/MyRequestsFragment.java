@@ -83,6 +83,7 @@ public class MyRequestsFragment extends ListFragment {
                     requestMap.put("phoneNumber", user.getString("phone_number"));
                     requestMap.put("name", user.getString("name"));
                     requestMap.put("area", request.getString("area"));
+                    requestMap.put("requestId", request.getString("id"));
 
                     allRequests.add(requestMap);
                 }

@@ -11,7 +11,7 @@
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="blood_group_sign_up">Whats your blood group?</string>
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-        AIzaSyC9HwwvD3YRMUDRBu1alK5GxAZWm0oKgZI
+        AIzaSyBZsYUL-QAQLIBya4BswePCuItIs2ri1xM
     </string>
     <string name="title_activity_maps">Touch to call a nearby donor</string>
 
