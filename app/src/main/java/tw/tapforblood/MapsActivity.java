@@ -1,93 +1,53 @@
 package tw.tapforblood;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import tw.tapforblood.R;
 
-public class MapsActivity extends FragmentActivity implements LocationListener {
+public class MapsActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private LocationManager locationManager;
-    Context context = this.getApplicationContext();
-    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-
+    private String value;
+    Context context;
+    private JSONObject bloodResponse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String registrationId = null;
         super.onCreate(savedInstanceState);
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            value = extras.getString("myObject");
+            bloodResponse = new Gson().fromJson(value, JSONObject.class);
+        }
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        registrationId = registerCloudMessaging(this.getApplicationContext());
-
-        Log.d("here",registrationId);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) this);
-
-
-    }
-
-    String registerCloudMessaging(Context context) {
-
-
-        // repeated calls to this method will return the same registration ID
-        // a new registration is needed if the app is updated or backup & restore happens
-        String registrationId = null;
-        try {
-            registrationId = gcm.register("380431285352");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        // Pass to server
-
-        // then uploads the registration ID to your server
-        return registrationId;
-    }
-
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("My current location"));
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d("Latitude","disable");
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d("Latitude","enable");
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude", "status");
     }
 
     @Override
@@ -134,55 +94,66 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
      */
     private void setUpMap() {
-        /*Focussing map in a particular city*/
+//        mMap.setMyLocationEnabled(true);
+        JSONObject response = null;
+        JSONObject active_request = null;
         LatLng NewYork= new LatLng(13.060422,80.249583);
-        CameraPosition camPos = new CameraPosition.Builder().target(NewYork).zoom(14).build();
-        CameraUpdate cam = CameraUpdateFactory.newCameraPosition(camPos);
-        mMap.animateCamera(cam);
+        final HashMap<String,String> donorNameNumberMap = new HashMap<>();
 
-        /*getting Latlong from given loction*/
+        try {
+            JSONObject bloodResponse1 = new JSONObject(value);
+            JSONObject bloodResponse = (JSONObject) bloodResponse1.get("nameValuePairs");
 
-        getLatLongFromAddress("Royapuram");
-        getLatLongFromAddress("T Nagar");
-        getLatLongFromAddress("Guindy");
-//        getLatLongFromAddress("Velachery");
-        getLatLongFromAddress("Choolaimedu");
+            JSONObject active_request1 = (JSONObject) bloodResponse.get("active_request");
+            active_request = (JSONObject) active_request1.get("nameValuePairs");
+            String latitude1 = active_request.getString("latitude");
+            String longitude1 = active_request.getString("longitude");
+            LatLng currentPoint1 = new LatLng(new Double(latitude1),new Double(longitude1));
+            CameraPosition camPos = new CameraPosition.Builder().target(currentPoint1).zoom(14).build();
+            CameraUpdate cam = CameraUpdateFactory.newCameraPosition(camPos);
+            mMap.animateCamera(cam);
+            String userId = active_request.getString("user_id");
 
-        /*getting latlong of current location */
-        LocationManager lm = (LocationManager) this.getApplicationContext()
-                .getSystemService(Context.LOCATION_SERVICE);
+            mMap.addMarker(new MarkerOptions().position(currentPoint1).title(userId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
-        Location location = lm
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            JSONObject requests1 = bloodResponse.getJSONObject("responses");
+            JSONArray requests = requests1.getJSONArray("values");
 
-        if(location != null){
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("My current location"));
-        }
 
-    }
 
-    private void getLatLongFromAddress(String address)
-    {
-        double lat= 0.0, lng= 0.0;
-
-        Geocoder geoCoder = new Geocoder(this, Locale.getDefault());
-        try
-        {
-            List<Address> addresses = geoCoder.getFromLocationName(address , 1);
-            if (addresses.size() > 0)
-            {
-                lat = addresses.get(0).getLatitude();
-                lng = addresses.get(0).getLongitude();
-                mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).title(addresses.get(0).getSubLocality()));
+            for(int i=0;i<requests.length();i++){
+                 response = requests.getJSONObject(i);
+                JSONObject res2 = response.getJSONObject("nameValuePairs");
+                String latitude = res2.getString("latitude");
+                String longitude = res2.getString("longitude");
+                LatLng currentPoint = new LatLng(new Double(latitude),new Double(longitude));
+                String nameOfDonor = res2.getString("name");
+                String phoneNumber = res2.getString("phone_number");
+                donorNameNumberMap.put(nameOfDonor,phoneNumber);
+                mMap.addMarker(new MarkerOptions().position(currentPoint).title(nameOfDonor)).showInfoWindow();
 
             }
-        }
-        catch(Exception e)
-        {
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+                @Override
+                public boolean onMarkerClick(Marker arg0) {
+                    String phoneNumber = donorNameNumberMap.get(arg0.getTitle());
+                    if (phoneNumber != null) {
+                        //Make a call
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                        startActivity(callIntent);
+                        return true;
+                    }
+//
+                    return false;
+                }
+
+            });
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+        mMap.addMarker(new MarkerOptions().position(NewYork).title(value));
     }
 }
 

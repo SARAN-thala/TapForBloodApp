@@ -30,6 +30,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,7 +173,7 @@ public class INeedBloodFragment extends Fragment implements View.OnClickListener
                 jsonObject.put("user_id", userId);
                 jsonObject.put("blood_group", bloodGroup);
 
-                jsonObject.put("area",area);
+                jsonObject.put("area", area);
                 jsonObject.put("latitude", location.getLatitude());
                 jsonObject.put("longitude", location.getLongitude());
 
@@ -186,11 +188,12 @@ public class INeedBloodFragment extends Fragment implements View.OnClickListener
                     HttpGet get = new HttpGet(tw.tapforblood.helpers.Environment.getResponsesUrl(userId));
                     HttpResponse blooddonorresponses = httpClient.execute(get);
                     JSONObject bloodDonorDetailsJSON = getJSONObject(blooddonorresponses);
-                    Intent in = getActivity().getIntent();
 
                     System.out.println(blooddonorresponses);
-                    Intent j = new Intent(getActivity().getBaseContext(), MapsActivity.class);
-                    startActivity(j);
+
+                    Intent intent = new Intent(getActivity().getBaseContext(), MapsActivity.class);
+                    intent.putExtra("myObject", new Gson().toJson(bloodDonorDetailsJSON));
+                    startActivity(intent);
 
                     return "created";
                 } else {
@@ -199,10 +202,10 @@ public class INeedBloodFragment extends Fragment implements View.OnClickListener
 
 
 
-
             } catch (JSONException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (UnsupportedEncodingException e) {
+            }
+            catch (UnsupportedEncodingException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } catch (ClientProtocolException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

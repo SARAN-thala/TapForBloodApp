@@ -13,6 +13,6 @@
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
         AIzaSyC9HwwvD3YRMUDRBu1alK5GxAZWm0oKgZI
     </string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Touch to call a nearby donor</string>
 
 </resources>
