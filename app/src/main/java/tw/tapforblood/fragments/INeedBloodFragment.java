@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.Gson;
@@ -185,14 +186,9 @@ public class INeedBloodFragment extends Fragment implements View.OnClickListener
                 if (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 201) {
                     System.out.println("created");
 
-                    HttpGet get = new HttpGet(tw.tapforblood.helpers.Environment.getResponsesUrl(userId));
-                    HttpResponse blooddonorresponses = httpClient.execute(get);
-                    JSONObject bloodDonorDetailsJSON = getJSONObject(blooddonorresponses);
-
-                    System.out.println(blooddonorresponses);
-
                     Intent intent = new Intent(getActivity().getBaseContext(), MapsActivity.class);
-                    intent.putExtra("myObject", new Gson().toJson(bloodDonorDetailsJSON));
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("bloodRequestId", new JSONObject(EntityUtils.toString(response.getEntity())).getString("blood_request_id"));
                     startActivity(intent);
 
                     return "created";
@@ -218,20 +214,5 @@ public class INeedBloodFragment extends Fragment implements View.OnClickListener
 
     }
 
-    private JSONObject getJSONObject(HttpResponse blooddonorresponses) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        JSONObject jsonObject = null;
-        HttpEntity entity = blooddonorresponses.getEntity();
-        InputStream content = entity.getContent();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-        String line;
-        while((line = reader.readLine()) != null){
-            builder.append(line);
-        }
-        try{
-            jsonObject = new JSONObject(builder.toString());
 
-        } catch(Exception e){e.printStackTrace();}
-        return jsonObject;
-    }
 }

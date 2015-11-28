@@ -23,7 +23,7 @@ public class Environment {
         return HOST_URI+ "/users/" + userId + "/requests/"+ requestId +"/create";
     }
 
-    public static String getResponsesUrl(String userId) {
-        return HOST_URI +"/users/" + userId + "/responses";
+    public static String getResponsesUrl(String userId, String bloodReqId) {
+        return HOST_URI +"/users/" + userId + "/responses/" + bloodReqId;
     }
 }
