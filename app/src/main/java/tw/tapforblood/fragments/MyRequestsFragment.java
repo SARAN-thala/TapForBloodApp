@@ -80,7 +80,10 @@ public class MyRequestsFragment extends ListFragment {
                     JSONObject request = new JSONObject(requestJson);
 
                     HashMap<String, String> requestMap = new HashMap<String, String>();
-                    requestMap.put("phoneNumber", user.getString("phone_number"));
+                    String phone_number = user.getString("phone_number");
+                    String encryptedNumber = phone_number.charAt(3) + phone_number.substring(4, 12)
+                            .replaceAll(".", "x") + phone_number.charAt(phone_number.length()-1);
+                    requestMap.put("phoneNumber", encryptedNumber);
                     requestMap.put("name", user.getString("name"));
                     requestMap.put("area", request.getString("area"));
                     requestMap.put("requestId", request.getString("id"));
