@@ -81,8 +81,9 @@ public class AllRequestsFragment extends ListFragment {
 
                     HashMap<String, String> requestMap = new HashMap<String, String>();
                     String phone_number = user.getString("phone_number");
-                    String encryptedNumber = phone_number.charAt(3) + phone_number.substring(4, 12)
-                            .replaceAll(".", "x") + phone_number.charAt(phone_number.length()-1);
+                    String encryptedNumber = phone_number.substring(3, 5)
+                            + phone_number.substring(5, 11).replaceAll(".", "x")
+                            + phone_number.substring(11, 13);
                     requestMap.put("phoneNumber", encryptedNumber);
                     requestMap.put("name", user.getString("name"));
                     requestMap.put("area", request.getString("area"));
