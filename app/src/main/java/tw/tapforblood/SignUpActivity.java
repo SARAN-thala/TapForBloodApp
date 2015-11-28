@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
@@ -183,6 +184,7 @@ public class SignUpActivity extends Activity
 
         private String userId = "";
 
+
         @Override
         protected String doInBackground(View... views) {
 
@@ -201,6 +203,7 @@ public class SignUpActivity extends Activity
                 jsonObject.put("last_donated", lastDonatedDate);
                 jsonObject.put("latitude", location.getLatitude());
                 jsonObject.put("longitude", location.getLongitude());
+                jsonObject.put("registration_id", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
 
                 StringEntity se = new StringEntity(jsonObject.toString());
                 se.setContentType("application/json");
