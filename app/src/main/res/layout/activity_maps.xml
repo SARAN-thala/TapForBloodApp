@@ -13,7 +13,5 @@
         android:orientation="horizontal"
         android:padding="0px" >
 
-
-
     </RelativeLayout>
 </RelativeLayout>

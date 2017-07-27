@@ -2,9 +2,11 @@ package tw.tapforblood;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +14,16 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -38,7 +39,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private String value;
@@ -48,9 +49,11 @@ public class MapsActivity extends FragmentActivity {
     private Bundle extras;
     private JSONObject bloodResponse;
     View mapView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         extras = getIntent().getExtras();
         paintMap();
     }
@@ -82,16 +85,16 @@ public class MapsActivity extends FragmentActivity {
         }
 
         View view = findViewById(R.id.maps_activity_layout);
-        if(view != null) {
+        if (view != null) {
             ViewGroup vg = (ViewGroup) (view.getParent());
             vg.removeView(view);
             setContentView(view);
-        }
-        else {
+        } else {
             setContentView(R.layout.activity_maps);
         }
         setUpMapIfNeeded();
     }
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -111,10 +114,9 @@ public class MapsActivity extends FragmentActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
             // Check if we were successful in obtaining the map.
-                setUpMap();
+            setUpMap();
         }
     }
 
@@ -124,15 +126,14 @@ public class MapsActivity extends FragmentActivity {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      * Copy (x,y)51.503363051° 30' 12.11'' N
-     Longitude:Copy (x°,y°)-0.12762500° 7' 39.45'' W
-
+     * Longitude:Copy (x°,y°)-0.12762500° 7' 39.45'' W
      */
     private void setUpMap() {
 //        mMap.setMyLocationEnabled(true);
         JSONObject response = null;
         JSONObject active_request = null;
-        LatLng NewYork= new LatLng(13.060422,80.249583);
-        final HashMap<String,String> donorNameNumberMap = new HashMap<>();
+        LatLng NewYork = new LatLng(13.060422, 80.249583);
+        final HashMap<String, String> donorNameNumberMap = new HashMap<>();
 
         try {
 
@@ -144,7 +145,7 @@ public class MapsActivity extends FragmentActivity {
 //            active_request = (JSONObject) active_request1.get("nameValuePairs");
             String latitude1 = active_request1.getString("latitude");
             String longitude1 = active_request1.getString("longitude");
-            LatLng currentPoint1 = new LatLng(new Double(latitude1),new Double(longitude1));
+            LatLng currentPoint1 = new LatLng(new Double(latitude1), new Double(longitude1));
             CameraPosition camPos = new CameraPosition.Builder().target(currentPoint1).zoom(14).build();
             CameraUpdate cam = CameraUpdateFactory.newCameraPosition(camPos);
             mMap.animateCamera(cam);
@@ -155,15 +156,15 @@ public class MapsActivity extends FragmentActivity {
             JSONArray requests = (JSONArray) bloodDonorDetailsJSON.get("responses");
             System.out.println(requests.length());
 
-            for(int i=0;i<requests.length();i++){
-                 response = requests.getJSONObject(i);
+            for (int i = 0; i < requests.length(); i++) {
+                response = requests.getJSONObject(i);
                 String latitude = response.getString("latitude");
                 String longitude = response.getString("longitude");
-                LatLng currentPoint = new LatLng(new Double(latitude),new Double(longitude));
+                LatLng currentPoint = new LatLng(new Double(latitude), new Double(longitude));
                 String nameOfDonor = response.getString("name");
                 System.out.println(nameOfDonor);
                 String phoneNumber = response.getString("phone_number");
-                donorNameNumberMap.put(nameOfDonor,phoneNumber);
+                donorNameNumberMap.put(nameOfDonor, phoneNumber);
                 mMap.addMarker(new MarkerOptions().position(currentPoint).title(nameOfDonor)).showInfoWindow();
 
             }
@@ -201,14 +202,25 @@ public class MapsActivity extends FragmentActivity {
         InputStream content = entity.getContent();
         BufferedReader reader = new BufferedReader(new InputStreamReader(content));
         String line;
-        while((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             builder.append(line);
         }
-        try{
+        try {
             jsonObject = new JSONObject(builder.toString());
 
-        } catch(Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return jsonObject;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
     }
 
     private class RequestHandler extends AsyncTask<View, Void, JSONObject> {
